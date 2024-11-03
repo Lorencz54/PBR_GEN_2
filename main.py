@@ -43,7 +43,5 @@ else:
     konstrukce_table_insert()
     pozarni_pasy()
 
-
-
 doc.Save()
 word.Quit()

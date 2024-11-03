@@ -128,6 +128,11 @@ elif trida_vyuziti_count == "T5":
 else:
     pass
 #
+# základní popis objektu
+predmet_PBR = sh_HL_info_data_only['O3'].value
+umisteni_obj = sh_HL_info_data_only['O10'].value
+zakladni_popis_obj = sh_HL_info_data_only['O16'].value
+#
 print("_________________________________________________project information obtained")
 print("_________________________________________________generating and filling CSN list")
 # normy ČSN
@@ -143,7 +148,6 @@ for row in range(26, 32):  # Adjust the range as needed
         l_chosen_CSN.append(raw_value)  # Use the position (row number) as the value
 #
 print("_________________________________________________all CSN listed")
-print(l_chosen_CSN)
 print("_________________________________________________obtaining object information")
 # informace o OB objektu
 objekt_pro_bydleni = sh_HL_info_data_only['C34'].value
