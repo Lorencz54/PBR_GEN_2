@@ -10,6 +10,9 @@ from moznosti_zasahu import *
 from PBZ import *
 from konstrukcni_system import *
 from kategorizace import *
+from zakladni_popis_projektu import *
+
+
 
 if typ_garaze == "jednotlivá":
     concept_garaz()
@@ -30,6 +33,7 @@ if objekt_pro_bydleni == "ANO":
 if kategorie == 0:
     zduvodneni_kategorizace()
 else:
+    popis_projektu()
     konstrukcni_system()
     popis_konstrukci_a_trida_reakce_table_insert()
     samostatne_PU()

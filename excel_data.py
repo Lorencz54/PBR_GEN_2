@@ -374,7 +374,20 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append("{:.2f}".format(sh_PU["T7"].value).replace('.', ','))  # přidá ps PÚ [5]
         l_PU_properties.append("{:.2f}".format(sh_PU["C2"].value).replace('.', ','))  # přidá pv PÚ [6]
         l_PU_properties.append("{:.2f}".format(sh_PU["C3"].value).replace('.', ','))  # přidá a PÚ [7]
+        d_PU_types.append(l_PU_properties)
 
+    elif sh_HL_PU_data_only[f'H{row}'].value == "garáž III":
+        l_PU_properties.append("garáž III")  # přidá typ PÚ [0]
+        l_PU_properties.append(sh_HL_PU_data_only[f'A{row}'].value.replace("_", " "))  # přidá označení PÚ [1]
+        l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value)  # přidá název PÚ [2]
+        l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ','))  # přidá pv´ PÚ [3]
+        l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value]  # definuje excelový list PÚ
+        l_PU_properties.append("{:.2f}".format(sh_PU["T13"].value).replace('.', ','))  # přidá ps PÚ [5]
+        l_PU_properties.append("{:.2f}".format(sh_PU["B2"].value).replace('.', ','))  # přidá pv PÚ [6]
+        l_PU_properties.append("{:.2f}".format(sh_PU["B3"].value).replace('.', ','))  # přidá a PÚ [8]
+        l_PU_properties.append("{:.2f}".format(sh_PU["M8"].value).replace('.', ','))  # přidá skutečnou kapacitu vozů garáže [8]
+        l_PU_properties.append("{:.2f}".format(sh_PU["R8"].value).replace('.', ',')) # přidá mezní počet stání hromadné garáže [9]
         d_PU_types.append(l_PU_properties)
 print("_________________________________________________all PUs listed")
 print("_________________________________________________creating output document")

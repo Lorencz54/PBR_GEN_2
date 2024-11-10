@@ -23,6 +23,7 @@ def upload_SPB_paragraphs():
         bm_PU_paragraphs_2.Style = "Normální"
         bm_PU_paragraphs.InsertParagraphAfter()
     for list in d_PU_types:
+        print(list[8], list[9])
         if list[0] == "OB1":
             nadpis_PU = "PÚ " + list[1] + " – " + list[2]
             bm_PU_paragraphs.InsertAfter(nadpis_PU)
@@ -51,7 +52,7 @@ def upload_SPB_paragraphs():
                 pass
             else:
                 bm_PU_paragraphs.InsertParagraphAfter()
-        elif list[0] == "nevýrobní" or list[0] == "nevýrobní (pv)" or list[0] == "garáž I":
+        elif list[0] == "nevýrobní" or list[0] == "nevýrobní (pv)" or list[0] == "garáž I" or list[0] == "garáž III":
             nadpis_PU = "PÚ " + list[1] + " – " + list[2]
             bm_PU_paragraphs.InsertAfter(nadpis_PU)
             bm_PU_paragraphs.Style = "Normální"

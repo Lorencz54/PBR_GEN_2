@@ -78,6 +78,31 @@ def mezni_rozmery_PU():
             bm_mezni_rozmery_PU_paragraph.Collapse(0)
             bm_mezni_rozmery_PU_paragraph_2 = bm_mezni_rozmery_PU_paragraph.Duplicate
             bm_mezni_rozmery_PU_paragraph_2.Style = "Normální"
+        if list[0] == "garáž III":
+            nadpis_PU = "PÚ " + list[1] + " – " + list[2]
+            bm_mezni_rozmery_PU_paragraph.InsertAfter(nadpis_PU)
+            bm_mezni_rozmery_PU_paragraph.Style = "Normální"
+            bm_mezni_rozmery_PU_paragraph.Font.Bold = True
+            bm_mezni_rozmery_PU_paragraph.InsertParagraphAfter()
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph.InsertAfter("Mezní rozměry PÚ jsou dány mezním počtem stání pro hromadné garáže. Dle ČSN 73 0804, čl. I.3.4 je stanoven mezní počet stání " + list[8] + ". Posuzovaný prostor hromadné garáže je navržen na max. " + list[9] + " stání.")
+            bm_mezni_rozmery_PU_paragraph.Style = "Odstavec se seznamem"
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph.InsertAfter("– vyhovuje ")
+            bm_mezni_rozmery_PU_paragraph.Font.Bold = True
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph.InsertParagraphAfter()
+            bm_mezni_rozmery_PU_paragraph.InsertAfter("Dle ČSN 73 0804, čl. I.3.4 ")
+            bm_mezni_rozmery_PU_paragraph.Font.Bold = False
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph.InsertAfter("nejsou ")
+            bm_mezni_rozmery_PU_paragraph.Font.Bold = True
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph.InsertAfter("překročeny mezní rozměry PÚ.")
+            bm_mezni_rozmery_PU_paragraph.InsertParagraphAfter()
+            bm_mezni_rozmery_PU_paragraph.Collapse(0)
+            bm_mezni_rozmery_PU_paragraph_2 = bm_mezni_rozmery_PU_paragraph.Duplicate
+            bm_mezni_rozmery_PU_paragraph_2.Style = "Normální"
     print("_________________________________________________mezni rozmery paragraphs uploaded")
 
 def samostatne_PU():
@@ -319,7 +344,7 @@ def pozarni_rizika_PU():
             else:
                 bm_PU_properties.InsertParagraphAfter()
             print("_________________________________________________nevyrobni PU paragraphs uploaded")
-        elif list[0] == "nevýrobní (pv)" or list[0] == "garáž I":
+        elif list[0] == "nevýrobní (pv)" or list[0] == "garáž I" or list[0] == "garáž III":
             nadpis_PU = "PÚ " + list[1] + " – " + list[2]
             bm_PU_properties.InsertAfter(nadpis_PU)
             bm_PU_properties.Style = "Normální"
