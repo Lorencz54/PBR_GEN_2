@@ -1,5 +1,4 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
 
 def upload_konstrukce_paragraphs():
     for list in d_PU_types:

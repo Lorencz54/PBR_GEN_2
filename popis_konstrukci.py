@@ -1,5 +1,4 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
 
 def popis_konstrukci_a_trida_reakce_table_insert():
     if l_svisle_nosne or l_svisle_nenosne:

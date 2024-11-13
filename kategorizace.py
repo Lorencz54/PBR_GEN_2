@@ -1,4 +1,3 @@
-from excel_data import *
 from placeholders import doc
 
 def zduvodneni_kategorizace():

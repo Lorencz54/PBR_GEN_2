@@ -1,5 +1,57 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
+
+
+
+def concept_CSN_ZS_I():
+    bm_vychozi_normy = doc.Bookmarks("Vychozi_normy").Range
+    bm_vychozi_normy.InsertParagraphAfter()
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter("Posouzení dle ČSN 73 0834")
+    bm_vychozi_normy.Style = "Podkapitola 1"
+    bm_vychozi_normy.InsertParagraphAfter()
+
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter("Veškeré změny pro řešený objekt jsou provedeny v mezním rozsahu stanoveném dle položek ČSN 73 0834, čl. 3.2. Žádná z předmětných změn není změnou užívání objektu, prostoru nebo provozu.")
+    bm_vychozi_normy.Style = "Normální"
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter("Pozn.: Posouzení změn užívání objektu viz příloha [B] PBŘ.")
+    bm_vychozi_normy.Font.Italic = True
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter("Dle ČSN 73 0834, čl. 3.3 je řešený objekt posuzován jako ")
+    bm_vychozi_normy.Style = "Normální"
+    bm_vychozi_normy.Font.Italic = False
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter("změna stavby skupiny I")
+    bm_vychozi_normy.Font.Bold = True
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertAfter(". U objektu je posouzeno pouze dodržení požadavků dle ČSN 73 0834, kap. 4. V objektu nejsou nově zřizovány prostory dle ČSN 73 0834, čl. 3.3 b).")
+    bm_vychozi_normy.Font.Bold = False
+    bm_vychozi_normy.Collapse(0)
+    bm_vychozi_normy.InsertParagraphAfter()
+    bm_vychozi_normy.InsertParagraphAfter()
+    bm_vychozi_normy.Collapse(0)
+
+    bm_vychozi_normy.InsertAfter("Navrhované změny v objektu:")
+    bm_vychozi_normy.HighlightColorIndex = 0
+    bm_vychozi_normy.Style = "Normální"
+    bm_vychozi_normy.Font.Bold = True
+    bm_vychozi_normy.InsertParagraphAfter()
+    bm_vychozi_normy.Collapse(0)
+
+    for zmena in l_popis_stavebnich_uprav:
+        bm_vychozi_normy.InsertAfter(zmena)
+        bm_vychozi_normy.InsertAfter(" (pol. 3.3 ")
+        bm_vychozi_normy.InsertAfter(l_clanky_stavebnich_uprav_I[l_popis_stavebnich_uprav.index(zmena)])
+        bm_vychozi_normy.InsertParagraphAfter()
+    bm_vychozi_normy.Style = "Odstavec se seznamem"
+    bm_vychozi_normy.Font.Bold = False
+    bm_vychozi_normy.Collapse(0)
+
+
+
+
+
+
 def concept_CSN_OB1():
     print("_________________________________________________importing CSN OB info")
     wdCollapseEnd = 0
@@ -71,13 +123,6 @@ def concept_CSN_OB2():
         bm_vychozi_normy.InsertParagraphAfter()
     print("_________________________________________________CSN OB info imported")
 
-def upload_rekreacni_obj():
-    bm_pristup_komunikace = doc.Bookmarks("PRISTUP_KOMUNIKACE_PARAGRAPHS").Range
-    wdCollapseEnd = 0
-    bm_pristup_komunikace.InsertAfter("Dle ČSN 73 0833, čl. 4.4.2 nemusí být u staveb pro rodinnou rekreaci zřízena přístupová komunikace.")
-    bm_pristup_komunikace.Style = "Normální"
-    bm_pristup_komunikace.InsertParagraphAfter()
-    bm_pristup_komunikace.Collapse(Direction=wdCollapseEnd)
 
 def concept_garaz():
     bm_vychozi_normy = doc.Bookmarks("Vychozi_normy").Range

@@ -1,5 +1,4 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
 
 def popis_projektu():
     bm_predmet_pbr = doc.Bookmarks("PREDMET_PBR_PARAGRAPH").Range

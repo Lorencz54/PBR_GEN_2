@@ -1,4 +1,4 @@
-from placeholders import doc
+from placeholders import *
 
 def upload_rekreacni_obj():
     bm_pristup_komunikace = doc.Bookmarks("PRISTUP_KOMUNIKACE_PARAGRAPHS").Range

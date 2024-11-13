@@ -1,5 +1,4 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
 
 def autonomni_detekce():
     bm_autonomni_detekce_paragraphs = doc.Bookmarks("AUTONOMNI_DETEKCE_PARAGRAPHS").Range

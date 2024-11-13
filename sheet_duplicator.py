@@ -67,7 +67,7 @@ for row in range(4, last_row_PU+1):
 duplicated_instalacni_sachty = False
 duplicated_OB2 = False
 
-# Open the workbook once
+# Open the excel_workbook once
 with xw.App(visible=False) as app:  # Set visible=True to see what's happening
     workbook = app.books.open(excel_file)
     # Check conditions for duplicating sheets

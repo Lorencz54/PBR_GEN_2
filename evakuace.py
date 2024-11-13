@@ -1,5 +1,7 @@
 from excel_data import *
 from placeholders import doc
+import win32com.client as win32
+
 def evakuace_obecne():
     bm_unikove_cesty_paragraphs = doc.Bookmarks("UNIKOVE_CESTY_PARAGRAPHS").Range
     bm_unikove_cesty_paragraphs.InsertAfter("Únik osob z objektu bude řešen ")

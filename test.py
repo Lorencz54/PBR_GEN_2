@@ -1,34 +1,31 @@
-import xlwings as xw
+import win32com.client as win32
 
-# List of sheet information [current sheet name, new sheet name, other value]
-d_PU_types = [["CHÚC", "new_name", 2], ["nevýrobní", "new_name_2", 3], ["instalační šachty", "new_name_instalacni", 4], ["instalační šachty", "new_name_instalacni_2", 4]]
+# Open Word application
+word = win32.Dispatch('Word.Application')
+word.Visible = False  # Set to True if you want to see the Word application
 
-# Variable to track if the "instalační šachty" sheet has been duplicated
-duplicated_instalacni_shachty = False
+# Open the source and destination documents
+source_doc = word.Documents.Open(r'C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\D131_PBŘ_nevýrobní_TZ.docx')
+destination_doc = word.Documents.Open(r'C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\table_test.docx')
 
-# Open the workbook once
-with xw.App(visible=False) as app:  # Set visible=True to see what's happening
-    workbook = app.books.open("D131_PBŘ_XXX_přílohy.xlsx")
+# Get the table from the source document
+source_table = source_doc.Tables(2)  # Assuming the table you want to copy is the first one
 
-    # Loop through the list in reversed order
-    for list_item in reversed(d_PU_types):
-        sheet_to_copy_name = list_item[0]  # Current sheet name to copy
-        new_sheet_name = list_item[1]  # New sheet name to assign
+# Copy the table
+source_table.Range.Copy()
 
-        # Check conditions for duplicating sheets
-        if sheet_to_copy_name == "instalační šachty" and not duplicated_instalacni_shachty:
-            duplicated_instalacni_shachty = True  # Mark as duplicated
-        elif sheet_to_copy_name == "instalační šachty" and duplicated_instalacni_shachty:
-            continue  # Skip further copies if already duplicated
+# Move to the end of the destination document and paste the table
+destination_doc.Content.InsertAfter('\n')  # Adds a newline to move the cursor
+destination_doc.Content.Paste()  # Paste the table
 
-        # Copy the sheet and rename it
-        sheet_to_copy = workbook.sheets[sheet_to_copy_name]
-        sheet_to_copy.api.Copy(Before=workbook.sheets[0].api)
+# Save the destination document
+destination_doc.SaveAs(r'C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\table_test.docx')
 
-        # Find and rename the newly copied sheet
-        for sheet in workbook.sheets:
-            if sheet.name == sheet_to_copy.name + " (2)":  # Default copied sheet name
-                sheet.name = new_sheet_name
-                break
+# Close the documents
+source_doc.Close()
+destination_doc.Close()
 
-    workbook.close()
+# Quit Word application
+word.Quit()
+
+

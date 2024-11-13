@@ -1,5 +1,4 @@
-from excel_data import *
-from placeholders import doc
+from placeholders import *
 
 def mezni_rozmery_PU():
     bm_mezni_rozmery_PU_paragraph = doc.Bookmarks("MEZNI_ROZMERY_PARAGRAPHS").Range

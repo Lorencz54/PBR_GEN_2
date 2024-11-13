@@ -1,5 +1,5 @@
 from excel_data import *
-
+import win32com.client as win32
 
 
 def delete_paragraph(paragraph):
@@ -15,7 +15,7 @@ def replace_placeholder_in_run(run, replacements):
             run.text = run.text.replace(placeholder, str(value))
 
 def replace_text_in_paragraphs(paragraphs, replacements):
-    """Replace text in a list of paragraphs based on a dictionary of replacements."""
+    """Replace text in a l_attachments of paragraphs based on a dictionary of replacements."""
     for paragraph in paragraphs:
         for run in paragraph.runs:
             replace_placeholder_in_run(run, replacements)
@@ -27,10 +27,10 @@ def remove_empty_paragraph(paragraph):
 
 print("_________________________________________________replacing placeholders")
 # Check if the Word file exists
-if not os.path.exists(word_file):
-    print(f"Word file '{word_file}' not found.")
+if not os.path.exists(word_project_template_path):
+    print(f"Word file '{word_project_template_path}' not found.")
 else:
-    document = Document(word_file)
+    document = Document(word_project_template_path)
     # Dictionary of placeholders and their corresponding replacement values
     replacements = {
         '[NAZEV_PROJEKTU]': nazev_projektu,

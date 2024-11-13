@@ -4,58 +4,74 @@ import re
 import sys
 from docx import Document
 import shutil
-import win32com.client as win32
 import subprocess
 import time
+import warnings
+
+# Suppress only the specific openpyxl warning about Data Validation
+warnings.filterwarnings("ignore", message=re.escape("Data Validation extension is not supported and will be removed"), category=UserWarning, module="openpyxl")
+
+
 
 print("_________________________________________________connecting word and excel files")
 # Check if any arguments were passed
 if len(sys.argv) > 1:
     # Print the argument (BATCH_DIR) passed from the batch file
-    batch_dir = sys.argv[1]
-    print(f"Batch directory received: {batch_dir}")
-    batch_dir = sys.argv[1].strip('"')
-    excel_filename = "D131_PBŘ_XXX_přílohy.xlsx"
+    project_folder_path = sys.argv[1].strip('"')
+    excel_project_template_name = "D131_PBŘ_XXX_přílohy.xlsx"
 else:
     print("No arguments were passed to the script.")
 
 # Get file paths from the user
-excel_file = os.path.join(batch_dir, excel_filename)
-if "Lenovo" in excel_file:
-    word_file = r"C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\D131_PBŘ_nevýrobní_TZ.docx"
-    cad_file = r"C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\D132_PBŘ_XXX_výkresy.dwg"
+excel_project_template_path = os.path.join(project_folder_path, excel_project_template_name)
+if "Lenovo" in excel_project_template_path:
+    word_project_template_path = r"C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\D131_PBŘ_nevýrobní_TZ.docx"
+    cad_project_template_path = r"C:\Users\Lenovo\OneDrive\Projekty\Skamba\sablony\PBR\D132_PBŘ_XXX_výkresy.dwg"
 else:
-    word_file = r"C:\Users\kevin\OneDrive\Projekty\Skamba\sablony\PBR\D131_PBŘ_nevýrobní_TZ.docx"
-    cad_file = r"C:\Users\kevin\OneDrive\Projekty\Skamba\sablony\PBR\D132_PBŘ_XXX_výkresy.dwg"
-# Check if the Excel file exists
-if not os.path.exists(excel_file):
-    print(f"Excel file '{excel_file}' not found.")
-else:
-    output_project_path = os.path.dirname(excel_file)
-    # Split the path and get the second-to-last part
-    path_parts = os.path.normpath(output_project_path).split(os.sep)
+    word_project_template_path = r"C:\Users\kevin\OneDrive\Projekty\Skamba\sablony\PBR\D131_PBŘ_nevýrobní_TZ.docx"
+    cad_project_template_path = r"C:\Users\kevin\OneDrive\Projekty\Skamba\sablony\PBR\D132_PBŘ_XXX_výkresy.dwg"
+print("_________________________________________________files connected")
+print("_________________________________________________renaming and loading excel file")
+# Check if the excel_project_template_path file exists
+if not os.path.exists(excel_project_template_path):
+    # Set the new file path if the original template path does not exist
+    path_parts = os.path.normpath(project_folder_path).split(os.sep)
     output_word_name = path_parts[-2] if len(path_parts) >= 2 else None
+
     # Remove the prefix pattern like "2024_53_" using regex
     if output_word_name:
         output_word_name = re.sub(r"^\d+_\d+_", "", output_word_name)
-    if output_word_name == "sablony":
-        pass
-    else:
-        output_excel_name_with_extension = f"D131_PBŘ_{output_word_name}_přílohy.xlsx" if output_word_name else None
-        # Create the new full path using os.path.join
-        new_file_path = os.path.join(os.path.dirname(excel_file), output_excel_name_with_extension)
-        # Rename the file
-        os.rename(excel_file, new_file_path)
-        excel_file = new_file_path
 
-    workbook = openpyxl.load_workbook(excel_file)
-    sh_SKT = workbook["SKT"]
-    workbook_data_only = openpyxl.load_workbook(excel_file, data_only=True)
-    sh_SKT_data_only = workbook_data_only["SKT"]
-    sh_HL_info_data_only = workbook_data_only["HL_info"]
-    sh_HL_PU_data_only = workbook_data_only["HL_PU"]
-    sh_HL_SK_data_only = workbook_data_only["HL_SK"]
-print("_________________________________________________files connected")
+    if output_word_name != "sablony":
+        output_excel_name_with_extension = f"D131_PBŘ_{output_word_name}_přílohy.xlsx" if output_word_name else None
+        new_file_path = os.path.join(os.path.dirname(excel_project_template_path), output_excel_name_with_extension)
+        excel_project_template_path = new_file_path
+        print(f"Using new file path: {excel_project_template_path}")
+else:
+    # If the file exists, rename it as needed
+    path_parts = os.path.normpath(project_folder_path).split(os.sep)
+    output_word_name = path_parts[-2] if len(path_parts) >= 2 else None
+
+    if output_word_name:
+        output_word_name = re.sub(r"^\d+_\d+_", "", output_word_name)
+
+    if output_word_name != "sablony":
+        output_excel_name_with_extension = f"D131_PBŘ_{output_word_name}_přílohy.xlsx" if output_word_name else None
+        new_file_path = os.path.join(os.path.dirname(excel_project_template_path), output_excel_name_with_extension)
+        os.rename(excel_project_template_path, new_file_path)
+        excel_project_template_path = new_file_path
+
+# Proceed to load the workbook using the final excel_project_template_path
+excel_workbook = openpyxl.load_workbook(excel_project_template_path)
+sh_SKT = excel_workbook["SKT"]
+workbook_data_only = openpyxl.load_workbook(excel_project_template_path, data_only=True)
+sh_SKT_data_only = workbook_data_only["SKT"]
+sh_HL_info_data_only = workbook_data_only["HL_info"]
+sh_HL_PU_data_only = workbook_data_only["HL_PU"]
+sh_HL_SK_data_only = workbook_data_only["HL_SK"]
+sh_HL_ZS_data_only = workbook_data_only["HL_ZS"]
+
+print("_________________________________________________excel file renamed and loaded")
 print("_________________________________________________obtaining project information")
 # údaje PD
 nazev_projektu = sh_SKT['F4'].value
@@ -134,7 +150,7 @@ umisteni_obj = sh_HL_info_data_only['O10'].value
 zakladni_popis_obj = sh_HL_info_data_only['O16'].value
 #
 print("_________________________________________________project information obtained")
-print("_________________________________________________generating and filling CSN list")
+print("_________________________________________________generating and filling CSN l_attachments")
 # normy ČSN
 l_chosen_CSN = []
 for row in range(26, 32):  # Adjust the range as needed
@@ -149,6 +165,11 @@ for row in range(26, 32):  # Adjust the range as needed
 #
 print("_________________________________________________all CSN listed")
 print("_________________________________________________obtaining object information")
+# informace o zmene stavby
+zmena_stavby = sh_HL_info_data_only['C45'].value
+skupina_zmeny_stavby = sh_HL_info_data_only['H45'].value
+popis_navrzenych_zmen = sh_HL_ZS_data_only['A3'].value
+#
 # informace o OB objektu
 objekt_pro_bydleni = sh_HL_info_data_only['C34'].value
 pocet_OB = sh_HL_info_data_only['H34'].value
@@ -173,7 +194,7 @@ umisteni_FVE = sh_HL_info_data_only['H42'].value
 FVE_baterie = sh_HL_info_data_only['M42'].value
 celkovy_vykon_FVE = sh_HL_info_data_only['H43'].value
 vyvin_tepla_FVE = sh_HL_info_data_only['M43'].value
-print("_________________________________________________information obtained")
+print("_________________________________________________object information obtained")
 print("_________________________________________________generating lists for constructions")
 # konstrukce
 l_svisle_nosne = []
@@ -234,6 +255,19 @@ l_pozarne_delici_vodorovne_nenosne = []
 l_pozarne_delici_konstrukce_strechy = []
 
 d_pozarne_delici_konstrukce = [l_pozarne_delici_svisle_nosne, l_pozarne_delici_vodorovne_nosne, l_pozarne_delici_svisle_nenosne, l_pozarne_delici_vodorovne_nenosne, l_pozarne_delici_konstrukce_strechy]
+#
+# listy pro změny staveb
+l_clanky_stavebnich_uprav_I = []
+l_popis_stavebnich_uprav = []
+#
+last_row_zmeny_staveb = 0
+for row in range(6, sh_HL_ZS_data_only.max_row+1):
+    if sh_HL_ZS_data_only.cell(row=row, column=1).value is not None:
+        last_row_zmeny_staveb = row
+
+for row in range(6, last_row_zmeny_staveb+1):
+    l_clanky_stavebnich_uprav_I.append(sh_HL_ZS_data_only[f'A{row}'].value)
+    l_popis_stavebnich_uprav.append(sh_HL_ZS_data_only[f'C{row}'].value)
 
 last_row_konstrukce = 0
 for row in range(5, sh_HL_SK_data_only.max_row+1):
@@ -313,7 +347,7 @@ for row in range(5, last_row_konstrukce+1):
             l_tridy_vnejsi_povrchy.append(sh_HL_SK_data_only[f'K{row}'])
         l_vnejsi_povrchy.append(sh_HL_SK_data_only[f'A{row}'])
 print("_________________________________________________all constructions listed")
-print("_________________________________________________generating and filling PUs list")
+print("_________________________________________________generating and filling PUs l_attachments")
 d_PU_types = []
 
 last_row_PU = 0
@@ -328,7 +362,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value) # přidá název PÚ [2]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ',')) # přidá pv PÚ [3]
         l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
-        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový list PÚ
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový l_attachments PÚ
         l_PU_properties.append("{:.2f}".format(sh_PU["T5"].value).replace('.', ','))  # přidá ps PÚ [5]
         d_PU_types.append(l_PU_properties)
 
@@ -338,7 +372,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value) # přidá název PÚ [2]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ',')) # přidá pv´ PÚ [3]
         l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
-        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový list PÚ
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový l_attachments PÚ
         l_PU_properties.append("{:.2f}".format(sh_PU["M6"].value).replace('.', ','))  # přidá ps PÚ [5]
         l_PU_properties.append("{:.2f}".format(sh_PU["M5"].value).replace('.', ','))  # přidá pn PÚ [6]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'M{row}'].value).replace('.', ','))  # přidá součinitel a PÚ [7]
@@ -350,7 +384,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value) # přidá název PÚ [2]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ',')) # přidá pv´ PÚ [3]
         l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
-        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový list PÚ
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový l_attachments PÚ
         l_PU_properties.append("{:.2f}".format(sh_PU["T7"].value).replace('.', ','))  # přidá ps PÚ [5]
         l_PU_properties.append("{:.2f}".format(sh_PU["C2"].value).replace('.', ','))  # přidá pv PÚ [6]
         l_PU_properties.append("{:.2f}".format(sh_PU["C3"].value).replace('.', ','))  # přidá a PÚ [7]
@@ -370,7 +404,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value) # přidá název PÚ [2]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ',')) # přidá pv´ PÚ [3]
         l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
-        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový list PÚ
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value] # definuje excelový l_attachments PÚ
         l_PU_properties.append("{:.2f}".format(sh_PU["T7"].value).replace('.', ','))  # přidá ps PÚ [5]
         l_PU_properties.append("{:.2f}".format(sh_PU["C2"].value).replace('.', ','))  # přidá pv PÚ [6]
         l_PU_properties.append("{:.2f}".format(sh_PU["C3"].value).replace('.', ','))  # přidá a PÚ [7]
@@ -382,7 +416,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append(sh_HL_PU_data_only[f'C{row}'].value)  # přidá název PÚ [2]
         l_PU_properties.append("{:.2f}".format(sh_HL_PU_data_only[f'L{row}'].value).replace('.', ','))  # přidá pv´ PÚ [3]
         l_PU_properties.append(sh_HL_PU_data_only[f'N{row}'].value)  # přidá SPB PÚ [4]
-        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value]  # definuje excelový list PÚ
+        sh_PU = workbook_data_only[sh_HL_PU_data_only[f'A{row}'].value]  # definuje excelový l_attachments PÚ
         l_PU_properties.append("{:.2f}".format(sh_PU["T13"].value).replace('.', ','))  # přidá ps PÚ [5]
         l_PU_properties.append("{:.2f}".format(sh_PU["B2"].value).replace('.', ','))  # přidá pv PÚ [6]
         l_PU_properties.append("{:.2f}".format(sh_PU["B3"].value).replace('.', ','))  # přidá a PÚ [8]
@@ -390,7 +424,7 @@ for row in range(4, last_row_PU+1):
         l_PU_properties.append("{:.2f}".format(sh_PU["R8"].value).replace('.', ',')) # přidá mezní počet stání hromadné garáže [9]
         d_PU_types.append(l_PU_properties)
 print("_________________________________________________all PUs listed")
-print("_________________________________________________creating output document")
+print("_________________________________________________creating and renaming output document")
 
 def terminate_process(process_name):
     try:
@@ -403,41 +437,39 @@ def terminate_process(process_name):
 # Specify the name of the process you want to kill (e.g., 'WINWORD.EXE' for Word)
 process_name = 'WINWORD.EXE'  # Change this to your process name
 
-# Assume word_file and excel_file are defined and valid
-document = Document(word_file)
+# Assume word_project_template_path and excel_project_template_path are defined and valid
+word_document = Document(word_project_template_path)
 
 
 if output_word_name == "sablony":
     output_word_name_with_extension = f"D131_PBŘ_test_TZ.docx" if output_word_name else None
-    output_word_path = os.path.join(output_project_path, output_word_name_with_extension)
+    output_word_path = os.path.join(project_folder_path, output_word_name_with_extension)
 
 else:
     output_word_name_with_extension = f"D131_PBŘ_{output_word_name}_TZ.docx" if output_word_name else None
     output_cad_name_with_extension = f"D132_PBŘ_{output_word_name}_výkresy.dwg" if output_word_name else None
     # Output the result
-    output_word_path = os.path.join(output_project_path, output_word_name_with_extension)
+    output_word_path = os.path.join(project_folder_path, output_word_name_with_extension)
 
     # Construct the destination file path
-    output_cad_path = os.path.join(output_project_path, output_cad_name_with_extension)
+    output_cad_path = os.path.join(project_folder_path, output_cad_name_with_extension)
 
     # Check if the source and destination are the same or if the file already exists in the destination folder
-    if os.path.abspath(cad_file) == os.path.abspath(output_cad_path):
+    if os.path.abspath(cad_project_template_path) == os.path.abspath(output_cad_path):
         print("Source and destination paths are the same. File copy skipped.")
     elif os.path.exists(output_cad_path):
         print("File already exists in the destination folder.")
         # Optional: Rename the file to avoid overwriting
-        new_destination_file = os.path.join(output_project_path, f"copy_of_{os.path.basename(cad_file)}")
-        shutil.copy(cad_file, new_destination_file)
+        new_destination_file = os.path.join(project_folder_path, f"copy_of_{os.path.basename(cad_project_template_path)}")
+        shutil.copy(cad_project_template_path, new_destination_file)
         print(f"File copied as: {new_destination_file}")
     else:
-        shutil.copy(cad_file, output_cad_path)
+        shutil.copy(cad_project_template_path, output_cad_path)
         print("File copied successfully!")
 
 try:
-    document.save(output_word_path)
+    word_document.save(output_word_path)
 except Exception:
     terminate_process(process_name)
-    document.save(output_word_path)  # Try saving again after terminating the process
-
-
-print("_________________________________________________Output document created")
+    word_document.save(output_word_path)  # Try saving again after terminating the process
+print("_________________________________________________Output document created and renamed")
